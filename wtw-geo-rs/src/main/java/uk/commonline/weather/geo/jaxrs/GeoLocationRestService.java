@@ -2,17 +2,18 @@ package uk.commonline.weather.geo.jaxrs;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import uk.commonline.weather.geo.service.GeoLocationManager;
 import uk.commonline.weather.model.Location;
+import uk.commonline.weather.model.Region;
 
 /**
  * 
@@ -22,7 +23,7 @@ import uk.commonline.weather.model.Location;
 // @Transactional
 public class GeoLocationRestService /* implements GeoLocationService */{
 
-    @Autowired
+    @Inject
     GeoLocationManager geoGeoLocationManager;
 
     protected GeoLocationManager getGeoLocationManager() {
@@ -36,54 +37,43 @@ public class GeoLocationRestService /* implements GeoLocationService */{
     public Class<Location> getEiClass() {
 	return Location.class;
     }
-
+    
     @GET
-    @Path("zip/{zip}")
+    @Path("source/{source}/id/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Location findByZip(@PathParam("zip") String zip) {
-
-	Location l = geoGeoLocationManager.findByZip(zip);
-	System.out.println("!!GeoLocationRestService after findbyzip");
-	if (l == null) {
-	    l = new Location();
-	    l.setCity("London");
-	}
-	return l;
-    }
-
-    @GET
-    @Path("town/{zip}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Location findByTown(@PathParam("town") String town) {
-	Location l = geoGeoLocationManager.findByTown(town);
-	if (l == null) {
-	    l = new Location();
-	    l.setCity("London");
-	}
-	return l;
-    }
-
-    @GET
-    @Path("woeid/{woeid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Location findByWoeid(@PathParam("woeid") String woeid) {
-
-	Location l = geoGeoLocationManager.findByWoeid(woeid);
-	if (l == null) {
-	    l = new Location();
-	    l.setCity("London");
-	}
+    public Location getLocation(@PathParam("source") String source, @PathParam("id") String id) {
+	Location l = geoGeoLocationManager.getLocation(source, id);
 	return l;
     }
 
     @GET
     @Path("filter/{filter}/typecode/{typecode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Location> findAllByType(@PathParam("filter") String filter, @PathParam("typecode") String typeCode) {
-	System.out.println("!!GeoLocationRestService findbyzip");
+    public List<Location> findByType(@PathParam("filter") String filter, @PathParam("typecode") String typeCode) {
 
-	List<Location> locations = geoGeoLocationManager.findAllByType(filter, typeCode);
+	List<Location> locations = geoGeoLocationManager.findByType(filter, typeCode);
 
 	return locations;
+    }
+
+    @GET
+    @Path("region/lat/{lat}/long/{long}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public long getRegion(@PathParam("lat") double latitude, @PathParam("long") double longitude) {
+	return geoGeoLocationManager.getRegion(latitude, longitude);
+    }
+
+    @GET
+    @Path("locate/source/{source}/lat/{lat}/long/{long}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getLocationId(@PathParam("source") String source, @PathParam("lat") double latitude, @PathParam("long") double longitude) {
+	return geoGeoLocationManager.getLocationId(source, latitude, longitude);
+    }
+
+    @GET
+    @Path("regioninfo/{region}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Region getRegionInfo(@PathParam("region") long region) {
+	return geoGeoLocationManager.getRegionInfo(region);
     }
 }

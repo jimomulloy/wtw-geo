@@ -4,22 +4,21 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
-import uk.commonline.weather.geo.service.GeoLocationService;
 import uk.commonline.weather.geo.source.GeoLocationSource;
 import uk.commonline.weather.model.Location;
 
-public class YahooGeoLocationSource implements GeoLocationSource, GeoLocationService {
+public class YahooGeoLocationSource implements GeoLocationSource {
 
-    @Autowired
+    @Inject
     private YahooGeoLocationRetriever yahooGeoLocationRetriever;
 
-    @Autowired
+    @Inject
     private YahooGeoLocationParser yahooGeoLocationParser;
 
     @Override
-    public List<Location> findAllByType(String filter, String typeCode) {
+    public List<Location> findByType(String filter, String typeCode) {
 	List<Location> locations = new ArrayList<Location>();
 	try {
 	    // Retrieve Data
@@ -33,79 +32,6 @@ public class YahooGeoLocationSource implements GeoLocationSource, GeoLocationSer
 	}
 
 	return locations;
-    }
-
-    @Override
-    public Location findByTown(String town) {
-	Location location = null;
-	location = new Location();
-	location.setCity("Unknown");
-
-	try {
-	    // Retrieve Data
-	    InputStream dataIn = yahooGeoLocationRetriever.retrieveByTown(town);
-
-	    // Parse DataSet
-	    List<Location> locations = yahooGeoLocationParser.parsePlaces(dataIn);
-
-	    if (locations.size() > 0) {
-		location = locations.get(0);
-	    }
-
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
-
-	return location;
-    }
-
-    @Override
-    public Location findByWoeid(String woeid) {
-	Location location = null;
-	location = new Location();
-	location.setCity("Unknown");
-
-	try {
-	    // Retrieve Data
-	    InputStream dataIn = yahooGeoLocationRetriever.retrieveByWoeid(woeid);
-
-	    // Parse DataSet
-	    location = yahooGeoLocationParser.parsePlace(dataIn);
-
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
-
-	return location;
-    }
-
-    public Location findByZip(final String zip) {
-
-	Location location = null;
-	location = new Location();
-	location.setCity("Unknown");
-
-	try {
-	    // Retrieve Data
-	    InputStream dataIn = yahooGeoLocationRetriever.retrieveByZip(zip);
-
-	    // Parse DataSet
-	    List<Location> locations = yahooGeoLocationParser.parsePlaces(dataIn);
-
-	    if (locations.size() > 0) {
-		location = locations.get(0);
-	    }
-
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
-
-	return location;
-    }
-
-    @Override
-    public GeoLocationService getGeoLocationService() {
-	return this;
     }
 
     @Override
@@ -127,6 +53,46 @@ public class YahooGeoLocationSource implements GeoLocationSource, GeoLocationSer
 
     public void setYahooGeoLocationRetriever(YahooGeoLocationRetriever yahooGeoLocationRetriever) {
 	this.yahooGeoLocationRetriever = yahooGeoLocationRetriever;
+    }
+
+    @Override
+    public String getLocationId(double latitude, double longitude) {
+	Location location = null;
+	location = new Location();
+	location.setType("Unknown");
+
+	try {
+	    // Retrieve Data
+	    InputStream dataIn = yahooGeoLocationRetriever.retrieveByCoords(latitude, longitude);
+
+	    // Parse DataSet
+	    location = yahooGeoLocationParser.parsePlaceQuery(dataIn);
+
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	}
+
+	return location.getSourceid();
+    }
+
+    @Override
+    public Location getLocation(String id) {
+	Location location = null;
+	location = new Location();
+	location.setType("Unknown");
+
+	try {
+	    // Retrieve Data
+	    InputStream dataIn = yahooGeoLocationRetriever.retrieveById(id);
+
+	    // Parse DataSet
+	    location = yahooGeoLocationParser.parsePlace(dataIn);
+
+	} catch (Exception ex) {
+	    ex.printStackTrace();
+	}
+
+	return location;
     }
 
 }

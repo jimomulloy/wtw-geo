@@ -30,6 +30,8 @@
 		<property name="geoLocationSources">
 			<list>
 				<ref local="yahooGeoLocationSource" />
+				<ref local="metGeoLocationSource" />
+				<ref local="googleGeoLocationSource" />
 			</list>
 		</property>
 	</bean>

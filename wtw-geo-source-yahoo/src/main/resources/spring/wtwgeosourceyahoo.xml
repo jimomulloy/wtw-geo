@@ -21,7 +21,7 @@
 
 	<bean id="yahooGeoLocationRetriever" class="uk.commonline.weather.geo.source.yahoo.YahooGeoLocationRetriever" />
 
-	<bean id="YahooGeoLocationParser" class="uk.commonline.weather.geo.source.yahoo.YahooGeoLocationParser" />
+	<bean id="yahooGeoLocationParser" class="uk.commonline.weather.geo.source.yahoo.YahooGeoLocationParser" />
 
 
 </beans>

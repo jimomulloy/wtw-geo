@@ -12,11 +12,13 @@
 	<name>Whatever Weather -  Geo Location Application parent</name>
 	<modules>
 		<module>wtw-geo-service</module>
-		<module>wtw-geo-rs</module>
-		<module>wtw-geo-client</module>
 		<module>wtw-geo-source</module>
 		<module>wtw-geo-source-yahoo</module>
+		<module>wtw-geo-source-met</module>
+		<module>wtw-geo-source-google</module>
 		<module>wtw-geo-manager</module>
+		<module>wtw-geo-rs</module>
+		<module>wtw-geo-client</module>
 	</modules>
 
 	<dependencies>

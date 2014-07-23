@@ -1,10 +1,17 @@
 package uk.commonline.weather.geo.source;
 
-import uk.commonline.weather.geo.service.GeoLocationService;
+import java.util.List;
+
+import uk.commonline.weather.model.Location;
+import uk.commonline.weather.model.Region;
 
 public interface GeoLocationSource {
+    	
+    	List<Location> findByType(String filter, String type);
 
-	GeoLocationService getGeoLocationService();
+	String getLocationId(double latitude, double longitude);
+	
+	Location getLocation(String id);
 	
 	String getSourceName();
 }
