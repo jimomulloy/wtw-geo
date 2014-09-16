@@ -19,83 +19,83 @@ public class GoogleGeoLocationSource implements GeoLocationSource {
 
     @Override
     public List<Location> findByType(String filter, String typeCode) {
-	List<Location> locations = new ArrayList<Location>();
-	try {
-	    // Retrieve Data
-	    InputStream dataIn = googleGeoLocationRetriever.retrieveAllByType(filter, typeCode);
+        List<Location> locations = new ArrayList<Location>();
+        try {
+            // Retrieve Data
+            InputStream dataIn = googleGeoLocationRetriever.retrieveAllByType(filter, typeCode);
 
-	    // Parse DataSet
-	    locations = googleGeoLocationParser.parsePlaces(dataIn);
+            // Parse DataSet
+            locations = googleGeoLocationParser.parsePlaces(dataIn);
 
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	return locations;
-    }
-
-    @Override
-    public String getSourceName() {
-	return "google";
+        return locations;
     }
 
     public GoogleGeoLocationParser getGoogleGeoLocationParser() {
-	return googleGeoLocationParser;
+        return googleGeoLocationParser;
     }
 
     public GoogleGeoLocationRetriever getGoogleGeoLocationRetriever() {
-	return googleGeoLocationRetriever;
-    }
-
-    public void setGoogleGeoLocationParser(GoogleGeoLocationParser googleGeoLocationParser) {
-	this.googleGeoLocationParser = googleGeoLocationParser;
-    }
-
-    public void setGoogleGeoLocationRetriever(GoogleGeoLocationRetriever googleGeoLocationRetriever) {
-	this.googleGeoLocationRetriever = googleGeoLocationRetriever;
-    }
-
-    @Override
-    public String getLocationId(double latitude, double longitude) {
-	Location location = null;
-	location = new Location();
-	location.setType("Unknown");
-	 location.setSourceid("Unknown");
-
-	try {
-	    // Retrieve Data
-	    InputStream dataIn = googleGeoLocationRetriever.retrieveByCoords(latitude, longitude);
-
-	    // Parse DataSet
-	    if(dataIn != null){
-		location = googleGeoLocationParser.parsePlace(dataIn);
-	    }
-
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
-
-	return location.getSourceid();
+        return googleGeoLocationRetriever;
     }
 
     @Override
     public Location getLocation(String id) {
-	Location location = null;
-	location = new Location();
-	location.setType("Unknown");
+        Location location = null;
+        location = new Location();
+        location.setType("Unknown");
 
-	try {
-	    // Retrieve Data
-	    InputStream dataIn = googleGeoLocationRetriever.retrieveById(id);
+        try {
+            // Retrieve Data
+            InputStream dataIn = googleGeoLocationRetriever.retrieveById(id);
 
-	    // Parse DataSet
-	    location = googleGeoLocationParser.parsePlace(dataIn);
+            // Parse DataSet
+            location = googleGeoLocationParser.parsePlace(dataIn);
 
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	return location;
+        return location;
+    }
+
+    @Override
+    public String getLocationId(double latitude, double longitude) {
+        Location location = null;
+        location = new Location();
+        location.setType("Unknown");
+        location.setSourceid("Unknown");
+
+        try {
+            // Retrieve Data
+            InputStream dataIn = googleGeoLocationRetriever.retrieveByCoords(latitude, longitude);
+
+            // Parse DataSet
+            if (dataIn != null) {
+                location = googleGeoLocationParser.parsePlace(dataIn);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return location.getSourceid();
+    }
+
+    @Override
+    public String getSourceName() {
+        return "google";
+    }
+
+    public void setGoogleGeoLocationParser(GoogleGeoLocationParser googleGeoLocationParser) {
+        this.googleGeoLocationParser = googleGeoLocationParser;
+    }
+
+    public void setGoogleGeoLocationRetriever(GoogleGeoLocationRetriever googleGeoLocationRetriever) {
+        this.googleGeoLocationRetriever = googleGeoLocationRetriever;
     }
 
 }

@@ -18,6 +18,26 @@ import uk.commonline.weather.model.Location;
 
 public class MetGeoLocationSource implements GeoLocationSource {
 
+    public class Updater extends Thread {
+
+        @Override
+        public void run() {
+            try {
+                // Retrieve Data
+                InputStream dataIn = MetGeoLocationSource.this.metGeoLocationRetriever.retrieveLocations();
+                if (dataIn == null) {
+                    throw new Exception("metGeoLocationRetriever.retrieveLocations() null stream");
+                }
+                // Parse DataSet
+                System.out.println("!!Update run:");
+                MetGeoLocationSource.this.metGeoLocationParser.parseLocations(dataIn, geoCache);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     private GeoCache geoCache = new GeoCache();
 
     @Inject
@@ -28,118 +48,97 @@ public class MetGeoLocationSource implements GeoLocationSource {
 
     @Override
     public List<Location> findByType(String filter, String typeCode) {
-	List<Location> locations = new ArrayList<Location>();
-	List<GeoLocation> gls = new ArrayList<GeoLocation>();
-	Location location = null;
-	location = new Location();
-	location.setType("Unknown");
+        List<Location> locations = new ArrayList<Location>();
+        List<GeoLocation> gls = new ArrayList<GeoLocation>();
+        Location location = null;
+        location = new Location();
+        location.setType("Unknown");
 
-	try {
-	    gls = geoCache.getLocations(filter, typeCode);
-	    for (GeoLocation gl : gls) {
-		location = new Location();
-		location.setSourceid(gl.id);
-		location.setName(gl.name);
-		location.setLatitude(gl.latitude);
-		location.setLongitude(gl.longitude);
-		locations.add(location);
-	    }
+        try {
+            gls = geoCache.getLocations(filter, typeCode);
+            for (GeoLocation gl : gls) {
+                location = new Location();
+                location.setSourceid(gl.id);
+                location.setName(gl.name);
+                location.setLatitude(gl.latitude);
+                location.setLongitude(gl.longitude);
+                locations.add(location);
+            }
 
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	return locations;
-    }
-
-    public class Updater extends Thread {
-
-	public void run() {
-	    try {
-		// Retrieve Data
-		InputStream dataIn = MetGeoLocationSource.this.metGeoLocationRetriever.retrieveLocations();
-		 if(dataIn == null){
-	  		throw new Exception("metGeoLocationRetriever.retrieveLocations() null stream");
-	  	    }
-		// Parse DataSet
-		System.out.println("!!Update run:");
-		MetGeoLocationSource.this.metGeoLocationParser.parseLocations(dataIn, geoCache);
-
-	    } catch (Exception ex) {
-		ex.printStackTrace();
-	    }
-	}
-    }
-
-    @PostConstruct
-    public void init() {
-	Runnable r = new Updater();
-	ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
-	service.scheduleAtFixedRate(r, 0, 3, TimeUnit.HOURS);
-
-    }
-
-    @Override
-    public String getSourceName() {
-	return "met";
-    }
-
-    public MetGeoLocationParser getMetGeoLocationParser() {
-	return metGeoLocationParser;
-    }
-
-    public MetGeoLocationRetriever getMetGeoLocationRetriever() {
-	return metGeoLocationRetriever;
-    }
-
-    public void setMetGeoLocationParser(MetGeoLocationParser metGeoLocationParser) {
-	this.metGeoLocationParser = metGeoLocationParser;
-    }
-
-    public void setMetGeoLocationRetriever(MetGeoLocationRetriever metGeoLocationRetriever) {
-	this.metGeoLocationRetriever = metGeoLocationRetriever;
-    }
-
-    @Override
-    public String getLocationId(double latitude, double longitude) {
-	String locationId = "";
-	try {
-	    GeoSite site = geoCache.getNearest(latitude, longitude);
-	    if(site == null || site.location == null){
-		locationId = "3772";
-	    }
-	    else 
-	    {
-		locationId = site.location.id;
-
-	    }
-
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
-
-	return locationId;
+        return locations;
     }
 
     @Override
     public Location getLocation(String id) {
-	Location location = null;
-	location = new Location();
-	location.setType("Unknown");
-	GeoLocation gl = null;
+        Location location = null;
+        location = new Location();
+        location.setType("Unknown");
+        GeoLocation gl = null;
 
-	try {
-	    gl = geoCache.getLocation(id);
-	    location.setSourceid(gl.id);
-	    location.setName(gl.name);
-	    location.setLatitude(gl.latitude);
-	    location.setLongitude(gl.longitude);
+        try {
+            gl = geoCache.getLocation(id);
+            location.setSourceid(gl.id);
+            location.setName(gl.name);
+            location.setLatitude(gl.latitude);
+            location.setLongitude(gl.longitude);
 
-	} catch (Exception ex) {
-	    ex.printStackTrace();
-	}
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	return location;
+        return location;
+    }
+
+    @Override
+    public String getLocationId(double latitude, double longitude) {
+        String locationId = "";
+        try {
+            GeoSite site = geoCache.getNearest(latitude, longitude);
+            if (site == null || site.location == null) {
+                locationId = "3772";
+            } else {
+                locationId = site.location.id;
+
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return locationId;
+    }
+
+    public MetGeoLocationParser getMetGeoLocationParser() {
+        return metGeoLocationParser;
+    }
+
+    public MetGeoLocationRetriever getMetGeoLocationRetriever() {
+        return metGeoLocationRetriever;
+    }
+
+    @Override
+    public String getSourceName() {
+        return "met";
+    }
+
+    @PostConstruct
+    public void init() {
+        Runnable r = new Updater();
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
+        service.scheduleAtFixedRate(r, 0, 3, TimeUnit.HOURS);
+
+    }
+
+    public void setMetGeoLocationParser(MetGeoLocationParser metGeoLocationParser) {
+        this.metGeoLocationParser = metGeoLocationParser;
+    }
+
+    public void setMetGeoLocationRetriever(MetGeoLocationRetriever metGeoLocationRetriever) {
+        this.metGeoLocationRetriever = metGeoLocationRetriever;
     }
 
 }

@@ -12,18 +12,18 @@ public class GoogleGeoLocationParser {
 
     private static Logger log = Logger.getLogger(GoogleGeoLocationParser.class);
 
-    public List<Location> parsePlaces(InputStream inputStream) throws Exception {
-
-	List<Location> locations = new ArrayList<Location>();
-
-	return locations;
-    }
-
     public Location parsePlace(InputStream inputStream) throws Exception {
 
-	Location location = null;
+        Location location = null;
 
-	return location;
+        return location;
+    }
+
+    public List<Location> parsePlaces(InputStream inputStream) throws Exception {
+
+        List<Location> locations = new ArrayList<Location>();
+
+        return locations;
     }
 
 }

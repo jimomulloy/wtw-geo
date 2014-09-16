@@ -12,8 +12,8 @@ public class GeoApplication extends ResourceConfig {
     public GeoApplication() {
         packages("uk.commonline.weather.geo.jaxrs;uk.commonline.weather.model;org.codehaus.jackson.jaxrs");
 
-        // Enable LoggingFilter & output entity.     
+        // Enable LoggingFilter & output entity.
         registerInstances(new LoggingFilter(Logger.getLogger(GeoApplication.class.getName()), true));
- 
+
     }
 }
