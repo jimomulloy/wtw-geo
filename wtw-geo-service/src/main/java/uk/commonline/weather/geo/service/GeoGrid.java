@@ -125,11 +125,6 @@ public class GeoGrid {
     }
 
     public Set<Region> getRegions(double swlatitude, double swlongitude, double nelatitude, double nelongitude) {
-        // NavigableSet<Region> swfloorEntry =
-        // grid.floorEntry(nelatitude).getValue();
-        // NavigableSet<Region> swceilingEntry =
-        // grid.ceilingEntry(swlatitude).getValue();
-        // swfloorEntry.retainAll(swceilingEntry);
         Set<Region> regionSet = new HashSet<Region>();
         if (swlatitude >= nelatitude || swlongitude >= nelongitude) {
             return regionSet;

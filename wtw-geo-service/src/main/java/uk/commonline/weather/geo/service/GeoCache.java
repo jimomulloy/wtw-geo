@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class GeoCache {
 
-    public class GeoLocation {
+    public static class GeoLocation {
 
         public String id;
         public String name;
@@ -42,7 +42,7 @@ public class GeoCache {
 
         // return distance from this (standpoint) to forepoint in kilometres
         public double distance(GeoLocation forepoint) {
-            // uses the Vincety formula to calculate the creat circle distance
+            // uses the Vincety formula to calculate the create circle distance
 
             // difference - only used for this calculation so no point in
             // keeping

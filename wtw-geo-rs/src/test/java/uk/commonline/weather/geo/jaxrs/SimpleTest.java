@@ -80,13 +80,4 @@ public class SimpleTest /* extends JerseyTest */{
         // assertEquals("Hello World!", hello);
     }
 
-    // @Test
-    public void testGreet() throws Exception {
-        // final String greeting =
-        // target("location").request().get(String.class);
-        // Assert.assertEquals("hello, world 1!", greeting);
-        // final String greeting2 =
-        // target("spring-resource").request().get(String.class);
-        // Assert.assertEquals("hello, world 2!", greeting2);
-    }
 }

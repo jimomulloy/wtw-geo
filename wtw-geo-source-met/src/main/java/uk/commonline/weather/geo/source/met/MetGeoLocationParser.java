@@ -57,8 +57,6 @@ public class MetGeoLocationParser implements ErrorHandler {
 
         // normalize text representation
         response.getDocumentElement().normalize();
-        System.out.println("!!Root element of the doc is " + response.getDocumentElement().getNodeName() + ", doc:"
-                + response.getDocumentElement().toString());
 
         // Get all search Result nodes
         NodeList nodes = (NodeList) xPath.compile("//Location").evaluate(response, XPathConstants.NODESET);
@@ -82,7 +80,7 @@ public class MetGeoLocationParser implements ErrorHandler {
                 lat = 0;
                 lon = 0;
             }
-            forepoints.add(geoCache.new GeoLocation(id, name, lat, lon));
+            forepoints.add(new GeoCache.GeoLocation(id, name, lat, lon));
         }
         geoCache.load(forepoints);
     }

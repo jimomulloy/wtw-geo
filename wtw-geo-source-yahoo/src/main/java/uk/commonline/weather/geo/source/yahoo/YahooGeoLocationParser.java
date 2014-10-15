@@ -12,7 +12,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -23,19 +22,6 @@ import uk.commonline.weather.model.Location;
 public class YahooGeoLocationParser implements ErrorHandler {
 
     private static Logger log = Logger.getLogger(YahooGeoLocationParser.class);
-
-    static void listNodes(Node node, String indent) {
-        String nodeName = node.getNodeName();
-        System.out.println(indent + nodeName + " Node, type is " + node.getClass().getName() + ":");
-        System.out.println(indent + " " + node);
-
-        NodeList list = node.getChildNodes();
-        if (list.getLength() > 0) {
-            System.out.println(indent + "Child Nodes of " + nodeName + " are:");
-            for (int i = 0; i < list.getLength(); i++)
-                listNodes(list.item(i), indent + " ");
-        }
-    }
 
     @Override
     public void error(SAXParseException spe) {

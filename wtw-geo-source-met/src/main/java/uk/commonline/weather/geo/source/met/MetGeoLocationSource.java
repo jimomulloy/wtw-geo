@@ -29,7 +29,6 @@ public class MetGeoLocationSource implements GeoLocationSource {
                     throw new Exception("metGeoLocationRetriever.retrieveLocations() null stream");
                 }
                 // Parse DataSet
-                System.out.println("!!Update run:");
                 MetGeoLocationSource.this.metGeoLocationParser.parseLocations(dataIn, geoCache);
 
             } catch (Exception ex) {

@@ -7,19 +7,19 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import uk.commonline.weather.geo.service.GeoGrid;
-import uk.commonline.weather.geo.service.GeoLocationManager;
+import uk.commonline.weather.geo.service.GeoLocationService;
 import uk.commonline.weather.geo.source.GeoLocationSource;
 import uk.commonline.weather.model.Location;
 import uk.commonline.weather.model.Region;
 
-public class GeoLocationManangerImpl implements GeoLocationManager {
+public class GeoLocationServiceImpl implements GeoLocationService {
 
     @Inject
     List<GeoLocationSource> geoLocationSources;
 
     private GeoGrid geoGrid;
 
-    GeoLocationManangerImpl() {
+    GeoLocationServiceImpl() {
         geoGrid = new GeoGrid();
         geoGrid.init(20);
     }
