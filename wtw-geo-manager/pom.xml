@@ -21,11 +21,6 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>whatever-weather-service</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>wtw-geo-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
