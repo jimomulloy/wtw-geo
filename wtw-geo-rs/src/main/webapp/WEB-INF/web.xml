@@ -85,7 +85,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
-	  <filter>
+	<!--filter>
         <filter-name>HTTPRequestInterceptor</filter-name>
         <filter-class>com.abien.xray.probe.http.HTTPRequestRESTInterceptor</filter-class>
         <init-param>
@@ -104,7 +104,7 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
+    </filter-mapping-->
     
     <servlet>
         <servlet-name>Ping</servlet-name>
