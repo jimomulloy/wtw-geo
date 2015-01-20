@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>uk.commonline.whatever</groupId>
@@ -108,7 +109,7 @@
 			<version>1.1.1</version>
 		</dependency>
 		<!-- Jackson JSON Processor -->
-	
+
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
@@ -201,7 +202,33 @@
 			<type>jar</type>
 		</dependency>
 
+
+		<dependency>
+			<groupId>uk.commonline</groupId>
+			<artifactId>admin4j</artifactId>
+			<version>1.0.3-rc1</version>
+			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jamonapi</groupId>
+			<artifactId>jamon</artifactId>
+			<version>2.80</version>
+		</dependency>
+		<dependency>
+			<groupId>com.abien.xray</groupId>
+			<artifactId>x-ray</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
+
 	<build>
 		<finalName>wtwgeo</finalName>
 		<plugins>
@@ -237,7 +264,8 @@
 					<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
 						<port>9090</port>
 					</connector>
-					<!--connector implementation="org.eclipse.jetty.server.ssl.SslSocketConnector"> <port>9443</port> <maxIdleTime>60000</maxIdleTime> <keystore>/tmp/keystore</keystore> 
+					<!--connector implementation="org.eclipse.jetty.server.ssl.SslSocketConnector"> 
+						<port>9443</port> <maxIdleTime>60000</maxIdleTime> <keystore>/tmp/keystore</keystore> 
 						<password>jetty8</password> <keyPassword>jetty8</keyPassword> </connector -->
 					<!--contextPath>/wtw</contextPath -->
 					<stopKey>foo</stopKey>
@@ -250,10 +278,236 @@
 						<artifactId>hsqldb</artifactId>
 						<version>${hsqldb.version}</version>
 					</dependency>
-					<!-- IF USING JDK8 dependency> <groupId>org.ow2.asm</groupId> <artifactId>asm</artifactId> <version>5.0.2</version> </dependency> <dependency> <groupId>org.ow2.asm</groupId> 
+					<!-- IF USING JDK8 dependency> <groupId>org.ow2.asm</groupId> <artifactId>asm</artifactId> 
+						<version>5.0.2</version> </dependency> <dependency> <groupId>org.ow2.asm</groupId> 
 						<artifactId>asm-commons</artifactId> <version>5.0.2</version> </dependency -->
 				</dependencies>
 			</plugin>
+			<!-- Compiler plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<fork>true</fork>
+					<executable>${jdk.javac.fullpath}</executable>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.7</targetJdk>
+					<excludes>
+						<exclude>**/*Bean.java</exclude>
+						<exclude>**/generated/*.java</exclude>
+					</excludes>
+					<excludeRoots>
+						<excludeRoot>target/generated-sources/stubs</excludeRoot>
+					</excludeRoots>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<findbugsXmlOutput>true</findbugsXmlOutput>
+					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+					<xmlOutput>true</xmlOutput>
+				</configuration>
+			</plugin>
+
+			<!-- Properties plugin (read external properties) -->
+			<!--plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>properties-maven-plugin</artifactId> 
+				<version>1.0-alpha-2</version> <executions> <execution> <phase>initialize</phase> 
+				<goals> <goal>read-project-properties</goal> </goals> <configuration> <files> 
+				<file>${basedir}/build.properties</file> </files> </configuration> </execution> 
+				</executions> </plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.7.1</version>
+			</plugin>
 		</plugins>
 	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<!--configuration>
+					<configLocation>${basedir}/checkstyle.xml</configLocation>
+					<enableRulesSummary>false</enableRulesSummary>
+				</configuration-->
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<!-- Requires setting 'export MAVEN_OPTS="-Xmx512m" ' -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<threshold>Normal</threshold>
+					<effort>Default</effort>
+					<excludeFilterFile>${basedir}/findbugs-exclude-filter.xml</excludeFilterFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>clirr-maven-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<minSeverity>info</minSeverity>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.0.1</version>
+				<configuration>
+					<targetJdk>${maven.compile.target}</targetJdk>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>pmd</report>
+							<report>cpd</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<tags>
+						<tag>TODO</tag>
+						<tag>NOPMD</tag>
+						<tag>NOTE</tag>
+					</tags>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javancss-maven-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
+
+			<!-- FINDBUGS -->
+			<plugin>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.1-SNAPSHOT</version>
+				<configuration>
+					<!-- Enables analysis which takes more memory but finds more bugs. If 
+						you run out of memory, changes the value of the effort element to 'Low'. -->
+					<effort>Max</effort>
+					<!-- Build doesn't fail if problems are found -->
+					<failOnError>false</failOnError>
+					<!-- Reports all bugs (other values are medium and max) -->
+					<threshold>Low</threshold>
+					<!-- Produces XML report -->
+					<xmlOutput>true</xmlOutput>
+					<!-- Configures the directory in which the XML report is created -->
+					<findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.0.1</version>
+				<configuration>
+					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<formats>
+						<format>xml</format>
+						<format>html</format>
+					</formats>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<version>1.0</version>
+				<configuration>
+					<transformationSets>
+						<transformationSet>
+							<!-- Configures the source directory of XML files. -->
+							<dir>${project.build.directory}/findbugs</dir>
+							<!-- Configures the directory in which the FindBugs report is written. -->
+							<outputDir>${project.build.directory}/findbugs</outputDir>
+							<!-- Selects the used stylesheet. -->
+							<!-- <stylesheet>fancy-hist.xsl</stylesheet> -->
+							<stylesheet>default.xsl</stylesheet>
+							<!--<stylesheet>plain.xsl</stylesheet> -->
+							<!--<stylesheet>fancy.xsl</stylesheet> -->
+							<!--<stylesheet>summary.xsl</stylesheet> -->
+							<fileMappers>
+								<!-- Configures the file extension of the output files. -->
+								<fileMapper
+									implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+									<targetExtension>.html</targetExtension>
+								</fileMapper>
+							</fileMappers>
+						</transformationSet>
+					</transformationSets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
